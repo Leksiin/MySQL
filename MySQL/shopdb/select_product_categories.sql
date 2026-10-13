@@ -1,0 +1,1 @@
+SELECT * FROM shopdb.product_categories;

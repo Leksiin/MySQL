@@ -1,0 +1,171 @@
+products
+CREATE TABLE `shopdb`.`product_categories` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE);
+
+categories
+CREATE TABLE `shopdb`.`products` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `price` DECIMAL NOT NULL,
+  `product_categorits_id` INT NOT NULL,
+  `articul` VARCHAR(20) NOT NULL,
+  `quality` INT NOT NULL DEFAULT 0,
+  `created_at` DATE NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE,
+  INDEX `product_categories_id_idx` (`product_categorits_id` ASC) VISIBLE,
+  UNIQUE INDEX `articul_UNIQUE` (`articul` ASC) VISIBLE,
+  CONSTRAINT `product_categories_id`
+    FOREIGN KEY (`product_categorits_id`)
+    REFERENCES `shopdb`.`product_categories` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
+
+
+customers
+CREATE TABLE `shopdb`.`customers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user` VARCHAR(100) NOT NULL,
+  `balance` DECIMAL NOT NULL DEFAULT 0,
+  `email` VARCHAR(100) NOT NULL,
+  `phone` VARCHAR(20) NOT NULL,
+  `address` VARCHAR(255) NOT NULL,
+  `total_orders` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `name_UNIQUE` (`user` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
+  UNIQUE INDEX `phone_UNIQUE` (`phone` ASC) VISIBLE);
+
+orders
+CREATE TABLE `shopdb`.`orders` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `customer_id` INT NOT NULL,
+  `order_date` DATE NOT NULL,
+  `customer_address` VARCHAR(255) NOT NULL,
+  `total_amount` DECIMAL(12,2) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
+
+
+
+
+------------------ academy --------------------------
+
+USE academy;
+
+CREATE TABLE classes(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    class_name VARCHAR(50) NOT NULL,
+    places TINYINT NOT NULL
+);
+
+CREATE TABLE student_groups(
+	groups_id INT PRIMARY KEY AUTO_INCREMENT,
+    group_name VARCHAR(50) NOT NULL,
+    stud_count TINYINT,
+    speciality VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE teachers(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(20) UNIQUE,
+    created_at DATE
+);
+    
+CREATE TABLE students(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(20) UNIQUE,
+    student_groups_id INT NOT NULL,
+    birthday_date DATE,
+    created_at DATE,
+    
+    FOREIGN KEY (student_groups_id)
+    REFERENCES student_groups(groups_id)
+);
+
+CREATE TABLE subjects(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    sub_name VARCHAR(50) NOT NULL,
+    hours DECIMAL NOT NULL,
+    teacher_id INT NOT NULL,
+    
+    FOREIGN KEY (teacher_id)
+    REFERENCES teachers(id)
+);
+
+CREATE TABLE lessions(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    theme_name VARCHAR(50) NOT NULL,
+    stud_count TINYINT,
+    subject_id INT NOT NULL,
+    student_groups_id INT NOT NULL,
+    teacher_id INT NOT NULL,
+    date_at DATETIME,
+    
+    FOREIGN KEY (subject_id)
+    REFERENCES subjects(id),
+    FOREIGN KEY (student_groups_id)
+    REFERENCES student_groups(groups_id),
+    FOREIGN KEY (teacher_id)
+    REFERENCES teachers(id)
+);
+
+CREATE TABLE student_grades(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    value_grade TINYINT NOT NULL,
+    teacher_id INT NOT NULL,
+    student_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    lession_id INT NOT NULL,
+    created_at DATETIME,
+    
+    FOREIGN KEY (teacher_id)
+    REFERENCES teachers(id),
+    FOREIGN KEY (student_id)
+    REFERENCES students(id),
+    FOREIGN KEY (subject_id)
+    REFERENCES subjects(id),
+    FOREIGN KEY (lession_id)
+    REFERENCES lessions(id)
+);
+
+CREATE TABLE shedules(
+	id INT PRIMARY KEY AUTO_INCREMENT,
+    date_day DATE NOT NULL,
+    lession_1_id INT,
+    lession_2_id INT,
+    lession_3_id INT,
+    lession_4_id INT,
+    lession_5_id INT,
+    lession_6_id INT,
+    lession_7_id INT,
+    lession_8_id INT,
+    created_at DATE,
+    
+    FOREIGN KEY (lession_1_id)
+    REFERENCES lessions(id),
+    FOREIGN KEY (lession_2_id)
+    REFERENCES lessions(id),
+    FOREIGN KEY (lession_3_id)
+    REFERENCES lessions(id),
+    FOREIGN KEY (lession_4_id)
+    REFERENCES lessions(id),
+    FOREIGN KEY (lession_5_id)
+    REFERENCES lessions(id),
+    FOREIGN KEY (lession_6_id)
+    REFERENCES lessions(id),
+    FOREIGN KEY (lession_7_id)
+    REFERENCES lessions(id),
+    FOREIGN KEY (lession_8_id)
+    REFERENCES lessions(id)
+);
+
+
