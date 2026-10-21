@@ -168,26 +168,63 @@ CREATE TABLE shedules(
     REFERENCES lessions(id)
 );
 
---------------------------------------
 
-USE academy;
+--------------------------  --------------------------
 
-INSERT INTO classes(class_name, places)
-VALUES ('501 violet', 24),
-	   ('502 ground', 22),
-       ('403 yellow', 18);
+CALL sp_subject_insert();
 
-INSERT INTO student_groups(group_name, stud_count, speciality)
-VALUES ('РПО-1', 16, 'разработчик 4 года'),
-	   ('РПО-2', 16, 'разработчик 4 года'),
-       ('ГД-1', 14, 'графический дизайн 3 года');
+SELECT *
+FROM teachers;
 
-INSERT INTO teachers(full_name, email, phone, created_at)
-VALUES('Иванов Иван Петович', 'ivanov@mail,com', '+79785353555', '2022-05-05'),
-	  ('Петров Василий Петрович', 'petrov@mail.com', '+79785353745', '2023-05-05'),
-      ('Соколова Анна Иванова', 'sokolova_an@mail.com', '+79785453211', '2022-06-05');
+SELECT FLOOR(RAND() * 100);
 
-INSERT INTO students(full_name, email, phone, student_group_id, birthday_date, created_at)
-VALUES('Козлов Иван Петович', 'kozlov_123@mail,com', '+79785358755', 1, '2000-05-05', '2022-05-05'),
-	  ('Соболев Василий Петрович', 'ssobolev@mail.com', '+79785353095', 2, '2001-04-05', '2023-05-05'),
-      ('Зайцева Анна Иванова', 'zayceva@mail.com', '+79785453001', 3, '2000-12-05', '2022-06-05');
+
+SELECT id FROM teachers ORDER BY RAND() LIMIT 1;
+
+SELECT ELT(FLOOR(RAND() * 5) + 1, 'Информатика', 'Биология', 'Физика', 'Химия', 'Базы данных');
+
+-------------------------- sp_teacher_insert5 --------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_teacher_insert5`()
+BEGIN
+	DECLARE i INT default 1;
+    DECLARE count INT default 1;
+    SELECT Count(id)
+    INTO i
+    FROM teachers;
+    SET count = i + 100;
+    
+	WHILE i < count DO
+		INSERT INTO teachers(full_name, email, phone, created_at)
+		VALUES(
+			Concat("Teacher", i),
+			Concat("teach_", i, "@gmail.com"),
+			Concat("+7978", LPAD(i,2,"0")),
+			curdate()
+		);
+		SET i = i + 1;
+	END WHILE;
+END
+
+-------------------------- sp_subject_insert --------------------------
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_subject_insert`()
+BEGIN
+	DECLARE i INT default 1;
+	DECLARE count INT default 1;
+    DECLARE t_id INT default 1;
+    SELECT Count(id) INTO i FROM subjects;
+    SET count = i + 100;
+    
+    WHILE i < count DO
+		SELECT id INTO t_id FROM teacher ORDER BY RAND() LIMIT 1;
+        INSERT INTO subjects(sub_name, hours, teacher_id)
+        
+        VALUES(
+			ELT(FLOOR(RAND() * 5) + 1, 'Информатика', 'Биология', 'Физика', 'Химия', 'Базы данных'),
+            FLOOR(RAND() * 100),
+            t_id
+		);
+		SET i = i + 1;
+	END WHILE;
+END
