@@ -274,7 +274,8 @@ BEGIN
         INSERT INTO student_groups(group_name, stud_count, speciality)
         VALUES(
 			Concat(add_name_course()," - ", d),
-            RAND()
+            Floor(RAND() * 20),
+            add_speciality()
         );
         SET i = i + 1;
     END WHILE;
