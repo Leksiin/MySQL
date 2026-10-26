@@ -255,3 +255,34 @@ SELECT id
 	INTO t_id FROM tables_name ORDER BY RAND() LIMIT 1;
 RETURN t_id;
 END
+
+-------------------------- sp_groups_insert (procedure) --------------------------
+
+CREATE PROCEDURE sp_groups_insert ()
+BEGIN
+	DECLARE count INT DEFAULT 0;
+    DECLARE i INT DEFAULT 1;
+    DECLARE d INT DEFAULT 1;
+    SELECT Count(id) INTO count FROM student_groups;
+    SET count = count + 10;
+    WHILE i <= count DO
+		IF i < 2 THEN
+			SET d = i;
+		ELSE
+			SET d = 0;
+		END IF;
+        INSERT INTO student_groups(group_name, stud_count, speciality)
+        VALUES(
+			Concat(add_name_course()," - ", d),
+            RAND()
+        );
+        SET i = i + 1;
+    END WHILE;
+END
+
+-------------------------- add_name_course (function) --------------------------
+
+CREATE  DEFINER=`root`@`localhost` FUNCTION add_name_course() RETURN
+BEGIN
+RETURN ELT(FLOOR(RAND(Min(10), Max(20)) * 5) + 1, 'РПО', 'ГД', 'МКА', 'Маркетинг', 'Разработка игр')
+END
